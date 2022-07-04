@@ -10,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import General.Constants;
-import Tools.ResultSetConverter;
+import Helper.ResultSetConverter;
 
 public class DbConnector {
     

@@ -1,18 +1,14 @@
 package Selenium;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.print.DocFlavor.STRING;
-
-import org.junit.validator.PublicClassValidator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.By.ByClassName;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.devtools.v101.browser.model.Bucket;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -109,6 +105,23 @@ public class SeleniumManager {
 
         return ret;
     }
+
+    public static String getTextByTagName(String tagName) throws Exception{
+        if(driver == null){
+            throw new Exception("Error: Driver is not initialized");
+        }
+
+        WebElement webElement = driver.findElement(By.tagName(tagName));
+        if(webElement == null){
+            throw new Exception("Unable to find element by Tag name: " + tagName + ". URL: " + driver.getCurrentUrl());
+        }
+
+        String ret = webElement.getText();
+
+        return ret;
+    }
+
+
     //#endregion
 
     //#region Set Text
@@ -319,17 +332,20 @@ public class SeleniumManager {
     //#endregion
 
     //#region Wait
-    public static void Wait(int miliseconds) throws Exception{
+    public static void wait(int miliseconds) throws Exception{
         if(driver == null){
             throw new Exception("Error: Driver is not initialized");
         }
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(miliseconds));
+        System.out.println("Start Waiting for: " + miliseconds + " milisec.");
+        //driver.manage().timeouts().implicitlyWait(Duration.ofMillis(miliseconds));
+        TimeUnit.MILLISECONDS.sleep(miliseconds);
+        System.out.println("End Waiting for: " + miliseconds + " milisec.");
     }
     //#endregion
 
     //#region Operations
 
-    public static void loginToGmailAndClickEmailLinkByText(String userName, String password, String linkText) throws Exception{
+    public static String loginToGmailAndClickVerificationLinkByText(String userName, String password, String linkText) throws Exception{
 
         String mailURL = "https://accounts.google.com/signin/v2/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&service=mail&sacu=1&rip=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin";
 
@@ -339,21 +355,39 @@ public class SeleniumManager {
 
         clickByElementXPath("//*[@id='identifierNext']/div/button");  
 
-        Wait(5000);
+        wait(5000);
 
         setInputTextByXPath("//*[@id='password']/div[1]/div/div[1]/input", password); 
 
         clickByElementXPath("//*[@id='passwordNext']");  
 
+        wait(20000);
+
         clickEmailLink(linkText);
-    }   
+
+        wait(2000);
+
+        SwithToTab(1);
+
+        String resultText = getTextByTagName("body");
+
+        return resultText;
+    } 
+    
+    public static void SwithToTab(int zeroBasedTabID) throws Exception{
+        if(driver == null){
+            throw new Exception("Error: Driver is not initialized");
+        }
+        ArrayList<String> tabs = new ArrayList<String> (driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(zeroBasedTabID));
+    }
 
     private static void clickEmailLink(String linkText) throws Exception{
         
         if(driver == null){
             throw new Exception("Error: Driver is not initialized");
         }
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5)); 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20)); 
         List<WebElement> inboxEmails = null;
 
         // read new emails
@@ -379,7 +413,7 @@ public class SeleniumManager {
         for(WebElement email : inboxEmails){        
 
             email.click();                                                                                                                                         
-            Wait(1000);    
+            wait(1000);    
             if(isLinkTextExist(linkText) == true){
                 clickByLinkText(linkText);
                 break;    
@@ -387,59 +421,59 @@ public class SeleniumManager {
         }  
     }
 
-    private static void ReadEmails() throws Exception{
+    // private static void ReadEmails() throws Exception{
         
-        if(driver == null){
-            throw new Exception("Error: Driver is not initialized");
-        }
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5)); 
-        List<WebElement> inboxEmails = null;
+    //     if(driver == null){
+    //         throw new Exception("Error: Driver is not initialized");
+    //     }
+    //     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5)); 
+    //     List<WebElement> inboxEmails = null;
 
-        // read new emails
-        try {
-            inboxEmails = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.xpath("//*[@class='zA zE']"))));  
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+    //     // read new emails
+    //     try {
+    //         inboxEmails = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.xpath("//*[@class='zA zE']"))));  
+    //     } catch (Exception e) {
+    //         System.out.println(e);
+    //     }
 
-        // read others
-        if(inboxEmails == null){
-            try {
-                inboxEmails = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.xpath("//*[@class='zA yO']"))));  
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        }
+    //     // read others
+    //     if(inboxEmails == null){
+    //         try {
+    //             inboxEmails = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.xpath("//*[@class='zA yO']"))));  
+    //         } catch (Exception e) {
+    //             System.out.println(e);
+    //         }
+    //     }
                           
        
-        if (inboxEmails == null){
-            throw new Exception("unable to find emails");
-        }
-        for(WebElement email : inboxEmails){        
+    //     if (inboxEmails == null){
+    //         throw new Exception("unable to find emails");
+    //     }
+    //     for(WebElement email : inboxEmails){        
 
-            boolean i = email.isDisplayed();
-            String tex = email.getText();
+    //         boolean i = email.isDisplayed();
+    //         String tex = email.getText();
 
-            email.click();                                                                                                                                         
+    //         email.click();                                                                                                                                         
 
-                WebElement label = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(@title,'with label Inbox')]")));                    
-                WebElement subject = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[contains(text(),'Subject of this message')]")));          
-                WebElement body = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Single line body of this message')]")));   
+    //             WebElement label = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(@title,'with label Inbox')]")));                    
+    //             WebElement subject = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[contains(text(),'Subject of this message')]")));          
+    //             WebElement body = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Single line body of this message')]")));   
 
-                if(label != null){
-                    String lab = label.getText();
-                    System.out.println(lab);
-                }
-                if(subject != null){
-                    String subj = subject.getText();
-                    System.out.println(subj);
-                }
-                if(body != null){
-                    String bd = body.getText();
-                    System.out.println(bd);
-                }                                                                                                                                                  
-        }  
-    }
+    //             if(label != null){
+    //                 String lab = label.getText();
+    //                 System.out.println(lab);
+    //             }
+    //             if(subject != null){
+    //                 String subj = subject.getText();
+    //                 System.out.println(subj);
+    //             }
+    //             if(body != null){
+    //                 String bd = body.getText();
+    //                 System.out.println(bd);
+    //             }                                                                                                                                                  
+    //     }  
+    // }
     //#endregion
 }
 

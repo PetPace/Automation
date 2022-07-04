@@ -13,5 +13,8 @@ public class Constants {
 
     public static String GMAIL_USER = "v2Automation@petpace.com";
     public static String GMAIL_PASS = "v2Password";
+
+    public static String TEST_STARTED = "***** Test Started: ";
+    public static String TEST_COMPLETED = "***** Test Completed: ";
     
 }

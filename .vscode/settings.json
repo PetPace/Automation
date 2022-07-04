@@ -85,6 +85,7 @@
         "jar_files/selenium-java-4.3.0/lib/opentelemetry-sdk-trace-1.15.0.jar",
         "jar_files/selenium-java-4.3.0/lib/opentelemetry-semconv-1.15.0-alpha.jar",
         "jar_files/selenium-java-4.3.0/lib/reactive-streams-1.0.4.jar",
-        "jar_files/selenium-java-4.3.0/lib/slf4j-api-1.7.36.jar"
+        "jar_files/selenium-java-4.3.0/lib/slf4j-api-1.7.36.jar",
+        "jar_files/slf4j-simple-1.7.36.jar"
     ]
 }

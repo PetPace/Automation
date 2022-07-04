@@ -3,6 +3,8 @@ package Runner;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import Tests.API.Auth.AuthLibrary;
 import Tests.API.Server_Health.ServerHealthLibrary;
@@ -14,6 +16,9 @@ import Tests.API.Server_Health.ServerHealthLibrary;
 public class TestRunner {
 
     public static void main(String[] args) {
+
+        Logger logger = LoggerFactory.getLogger(TestRunner.class);
+        logger.info("This is how you configure Java Logging with SLF4J");
 
         System.out.println("Server Health controller starting...");
 
