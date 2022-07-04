@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -92,6 +93,7 @@ public class RestClient {
 		http.setRequestMethod(requestType);
 		http.setDoOutput(true);
 		http.setRequestProperty("Content-Type", "application/json");
+		http.setRequestProperty("accept", "application/json");
 		if (token != null) {
 			http.setRequestProperty("authorization", "Bearer " + token);
 		}

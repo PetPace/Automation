@@ -39,17 +39,15 @@ public class AuthLibrary {
 	}
 
     public AuthModel userLogin(String api, String email, String password) throws IOException {
-
-		String url = api + "/" + "auth/login";
-       
+	       
         Map<String,String> payload = new HashMap<>();
 		payload.put("email", email);
 		payload.put("password",password);
 
         String json = JsonToMapper.GetJsonFromMap(payload);
 
-		String response = RestClient.sendPostOrPutRequest("POST", url, null, json);
-
+		String response = RestClient.sendPostOrPutRequest("POST", api, null, json);
+        
 		System.out.println(response);
 
         ObjectMapper om = new ObjectMapper();
